@@ -27,12 +27,32 @@ final class MovieListTableViewCell: UITableViewCell {
         return logoImageView
     }()
     
-    lazy var artistLabel: UILabel = {
+    lazy var movieTypeLabel: UILabel = {
         
-        let artistLabel = UILabel()
-        artistLabel.textColor = .white
-        artistLabel.font = .systemFont(ofSize: 12, weight: .heavy)
-        return artistLabel
+        let movieTypeLabel = UILabel()
+        movieTypeLabel.textColor = .white
+//        movieTypeLabel.backgroundColor = .red
+        movieTypeLabel.font = .systemFont(ofSize: 12, weight: .heavy)
+        return movieTypeLabel
+        
+    }()
+    
+    lazy var movieYearLabel: UILabel = {
+        
+        let movieYearLabel = UILabel()
+        movieYearLabel.textColor = .white
+//        movieYearLabel.backgroundColor = .green
+        movieYearLabel.font = .systemFont(ofSize: 12, weight: .heavy)
+        return movieYearLabel
+        
+    }()
+    lazy var imdbLabel: UILabel = {
+        
+        let imdbLabel = UILabel()
+        imdbLabel.textColor = .white
+//        imdbLabel.backgroundColor = .green
+        imdbLabel.font = .systemFont(ofSize: 12, weight: .heavy)
+        return imdbLabel
         
     }()
     
@@ -41,7 +61,7 @@ final class MovieListTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         selectionStyle = .none
-        backgroundColor = .blue
+        backgroundColor = .black
         setupViews()
         setupLayout()
     }
@@ -53,27 +73,40 @@ final class MovieListTableViewCell: UITableViewCell {
     func setupViews() {
         contentView.addSubview(titleLabel)
         contentView.addSubview(logoImageView)
-        contentView.addSubview(artistLabel)
+        contentView.addSubview(movieTypeLabel)
+        contentView.addSubview(movieYearLabel)
+        contentView.addSubview(imdbLabel)
     }
     func setupLayout() {
         
         titleLabel.snp.makeConstraints { make in
             make.right.equalToSuperview().offset(-50)
             make.left.equalTo(logoImageView.snp.right).offset(20)
-            make.bottom.equalTo(self.snp.centerY).offset(-5)
+            make.bottom.equalTo(self.snp.centerY).offset(-20)
         }
         
         logoImageView.snp.makeConstraints { make in
-            make.height.width.equalTo(120)
+            make.height.width.equalTo(140)
             make.left.top.bottom.equalToSuperview().inset(10)
         }
         
-        artistLabel.snp.makeConstraints { make in
+        movieTypeLabel.snp.makeConstraints { make in
             make.left.equalTo(logoImageView.snp.right).offset(20)
             make.right.equalToSuperview().offset(-50)
             make.top.equalTo(self.snp.centerY).offset(5)
         }
-        
+        movieYearLabel.snp.makeConstraints { make in
+            make.left.equalTo(logoImageView.snp.right).offset(20)
+            make.right.equalToSuperview().offset(-50)
+            make.top.equalTo(self.snp.centerY).offset(20)
+            
+        }
+        imdbLabel.snp.makeConstraints { make in
+            make.left.equalTo(logoImageView.snp.right).offset(20)
+            make.right.equalToSuperview().offset(-50)
+            make.top.equalTo(movieYearLabel.snp.bottom).offset(5)
+            
+        }
         
     }
     
@@ -82,11 +115,35 @@ final class MovieListTableViewCell: UITableViewCell {
 // MARK: - Configure
 extension MovieListTableViewCell {
     
+
     func configure(movie: Movie, selectedIndex: Int) {
+       let url = URL(string: movie.poster)
         titleLabel.text = movie.title
-        logoImageView.image = UIImage(named: "image8")
-        artistLabel.text = movie.type
+        movieTypeLabel.text = movie.type
+        movieYearLabel.text = movie.year
+        imdbLabel.text = movie.imdbID
         self.selectedIndex = selectedIndex
+        loadimage(urlString: movie.poster)
         
+    }
+}
+
+extension MovieListTableViewCell {
+    
+    func loadimage (urlString : String) {
+        guard let url = URL(string: urlString)else {
+            return
+        }
+        DispatchQueue.global() .async {
+            [weak self] in
+            if let data = try? Data(contentsOf: url) {
+                if let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        self?.logoImageView.image = image
+                    }
+                }
+            }
+                
+        }
     }
 }

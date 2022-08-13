@@ -12,7 +12,7 @@ final class MovieListView: UIView {
     lazy var tableView : UITableView = {
         let tableView = UITableView()
         tableView.register(MovieListTableViewCell.self, forCellReuseIdentifier: "MovieListTableViewCell")
-        tableView.backgroundColor = .blue
+        tableView.backgroundColor = .black
         return tableView
         
     }()

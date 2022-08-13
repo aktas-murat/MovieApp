@@ -39,7 +39,7 @@ final class MovieListViewController: UIViewController {
         //tableView.reloadData()
         
 
-        moviewListViewModel?.searchMovie("fast")
+        moviewListViewModel?.searchMovie("yesil")
         
     }
     
